@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Unit {
+  KG
+  LBS
+}
+
+enum ProgramStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  passwordHash   String
+  unitPreference Unit         @default(KG)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  exercises      Exercise[]
+  programs       Program[]
+  logs           ProgramLog[]
+}
+
+model Exercise {
+  id         String   @id @default(uuid())
+  userId     String
+  name       String
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id])
+  lastSets   Set[]
+  programDays ProgramDayExercise[]
+}
+
+model Set {
+  id         String   @id @default(uuid())
+  exerciseId String
+  weight     Float
+  reps       Int
+  order      Int       // 1 = Set 1, 2 = Set 2, etc.
+
+  exercise   Exercise  @relation(fields: [exerciseId], references: [id])
+}
+
+model Program {
+  id        String         @id @default(uuid())
+  userId    String
+  name      String
+  status    ProgramStatus  @default(ACTIVE)
+  details   String?
+  createdAt DateTime       @default(now())
+
+  user      User           @relation(fields: [userId], references: [id])
+  days      ProgramDay[]
+  logs      ProgramLog[]
+}
+
+model ProgramDay {
+  id        String   @id @default(uuid())
+  programId String
+  name      String
+
+  program   Program  @relation(fields: [programId], references: [id])
+  exercises ProgramDayExercise[]
+}
+
+model ProgramDayExercise {
+  id           String   @id @default(uuid())
+  programDayId String
+  exerciseId   String
+
+  programDay   ProgramDay @relation(fields: [programDayId], references: [id])
+  exercise     Exercise   @relation(fields: [exerciseId], references: [id])
+}
+
+model ProgramLog {
+  id           String       @id @default(uuid())
+  userId       String
+  programId    String
+  programName  String
+  startDate    DateTime
+  endDate      DateTime?
+
+  user         User         @relation(fields: [userId], references: [id])
+  program      Program      @relation(fields: [programId], references: [id])
+  days         ProgramLogDay[]
+}
+
+model ProgramLogDay {
+  id       String                @id @default(uuid())
+  logId    String
+  date     DateTime             @default(now())
+
+  log      ProgramLog           @relation(fields: [logId], references: [id])
+  exercises ProgramLogDayExercise[]
+}
+
+model ProgramLogDayExercise {
+  id       String           @id @default(uuid())
+  logDayId String
+  name     String
+
+  logDay   ProgramLogDay    @relation(fields: [logDayId], references: [id])
+  sets     LoggedSet[]
+}
+
+model LoggedSet {
+  id               String   @id @default(uuid())
+  logDayExerciseId String
+  weight           Float
+  reps            Int
+  order           Int
+
+  exerciseLog      ProgramLogDayExercise @relation(fields: [logDayExerciseId], references: [id])
+}
