@@ -28,6 +28,7 @@ model User {
   exercises      Exercise[]
   programs       Program[]
   logs           ProgramLog[]
+  refreshTokens  RefreshToken[]
 }
 
 model Exercise {
@@ -121,4 +122,13 @@ model LoggedSet {
   order           Int
 
   exerciseLog      ProgramLogDayExercise @relation(fields: [logDayExerciseId], references: [id])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
