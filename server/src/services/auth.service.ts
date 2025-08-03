@@ -4,8 +4,8 @@ import prisma from '../prisma/client';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
-const ACCESS_TOKEN_EXPIRES_IN = '15m';
-const REFRESH_TOKEN_EXPIRES_DAYS = 7;
+const ACCESS_TOKEN_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
+const REFRESH_TOKEN_EXPIRES_DAYS = parseInt(process.env.REFRESH_TOKEN_DAYS || '7', 10);
 const MILLISECONDS_PER_DAY = 86400000;
 
 export const authService = {
@@ -30,7 +30,7 @@ export const authService = {
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET!,
-      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN } as jwt.SignOptions
     );
 
     const refreshToken = uuidv4();
@@ -83,7 +83,7 @@ export const authService = {
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET!,
-      { expiresIn: ACCESS_TOKEN_EXPIRES_IN }
+      { expiresIn: ACCESS_TOKEN_EXPIRES_IN } as jwt.SignOptions
     );
 
     return { accessToken };

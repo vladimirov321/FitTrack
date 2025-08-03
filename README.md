@@ -55,7 +55,7 @@ FitTrack empowers users to define their own exercises, build custom multi-day wo
 
 ## 🚀 MVP Roadmap
 
-- [ ] User authentication (JWT)
+- [x] User authentication (JWT)
 - [ ] Create and manage personal exercise table
 - [ ] Program creation with custom days and exercise assignment
 - [ ] Workout logging per program day
@@ -65,12 +65,76 @@ FitTrack empowers users to define their own exercises, build custom multi-day wo
 
 ---
 
-## 📦 Installation (Coming Soon)
+## 📦 Installation
 
-This project will be structured as a monorepo:
+This project is structured as a monorepo:
 - `server/` → Express.js API with TypeScript
-- `mobile/` → React Native app with Tailwind support
+- `mobile/` → React Native app with Tailwind support (Coming Soon)
 
-> Full setup instructions and scripts will be added in the initial release.
+### Prerequisites
+- Node.js (v18 or higher)
+- Docker (for PostgreSQL)
+- Git
+
+### Server Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd FitTrack/server
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Update the `.env` file with your configuration:
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/fittrack"
+   JWT_SECRET="your-super-secret-jwt-key"
+   NODE_ENV="development"
+   PORT=4000
+   ```
+
+4. **Start PostgreSQL with Docker**
+   ```bash
+   docker run --name fittrack-postgres \
+     -e POSTGRES_USER=username \
+     -e POSTGRES_PASSWORD=password \
+     -e POSTGRES_DB=fittrack \
+     -p 5432:5432 \
+     -d postgres
+   ```
+
+5. **Run database migrations**
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+6. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+7. **Optional: Open Prisma Studio** (Database GUI)
+   ```bash
+   npx prisma studio
+   ```
+
+### API Endpoints
+
+Once the server is running on `http://localhost:4000`, you can test the authentication endpoints:
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/refresh-token` - Token refresh
+- `POST /api/auth/logout` - User logout
+
+> Mobile app setup instructions will be added when the React Native implementation is ready.
 
 ---
