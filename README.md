@@ -56,7 +56,7 @@ FitTrack empowers users to define their own exercises, build custom multi-day wo
 ## 🚀 MVP Roadmap
 
 - [x] User authentication (JWT)
-- [ ] Create and manage personal exercise table
+- [x] Create and manage personal exercise table
 - [ ] Program creation with custom days and exercise assignment
 - [ ] Workout logging per program day
 - [ ] Exercise table updates based on latest log entry
