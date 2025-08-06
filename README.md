@@ -57,7 +57,7 @@ FitTrack empowers users to define their own exercises, build custom multi-day wo
 
 - [x] User authentication (JWT)
 - [x] Create and manage personal exercise table
-- [ ] Program creation with custom days and exercise assignment
+- [x] Program creation with custom days and exercise assignment
 - [ ] Workout logging per program day
 - [ ] Exercise table updates based on latest log entry
 - [ ] View current active program + log history

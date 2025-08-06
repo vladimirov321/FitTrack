@@ -1,28 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
+const { body, validationResult } = require('express-validator');
 
-export const validateAuthRequest = (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
-  
-  if (!email || !password) {
-    const error = new Error('Email and password required');
+const handleValidationErrors = (req: Request, res: Response, next: NextFunction) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error(errors.array()[0].msg);
     return next(error);
   }
-  
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    const error = new Error('Invalid email format');
-    return next(error);
-  }
-  
-  // Password length validation
-  if (password.length < 6) {
-    const error = new Error('Password must be at least 6 characters');
-    return next(error);
-  }
-  
   next();
 };
+
+export const validateAuthRequest = [
+  body('email')
+    .isEmail()
+    .withMessage('Invalid email format')
+    .normalizeEmail(),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
+  handleValidationErrors
+];
 
 export const validateRefreshToken = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.refreshToken;
