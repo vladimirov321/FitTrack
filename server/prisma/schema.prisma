@@ -40,6 +40,7 @@ model Exercise {
   user       User     @relation(fields: [userId], references: [id])
   lastSets   Set[]
   programDays ProgramDayExercise[]
+  loggedExercises ProgramLogDayExercise[]
 }
 
 model Set {
@@ -101,17 +102,19 @@ model ProgramLogDay {
   logId    String
   date     DateTime             @default(now())
 
-  log      ProgramLog           @relation(fields: [logId], references: [id])
+  log      ProgramLog           @relation(fields: [logId], references: [id], onDelete: Cascade)
   exercises ProgramLogDayExercise[]
 }
 
 model ProgramLogDayExercise {
-  id       String           @id @default(uuid())
-  logDayId String
-  name     String
+  id         String           @id @default(uuid())
+  logDayId   String
+  exerciseId String?          // Make optional to handle existing data
+  name       String           // Snapshot of exercise name at time of logging
 
-  logDay   ProgramLogDay    @relation(fields: [logDayId], references: [id])
-  sets     LoggedSet[]
+  logDay     ProgramLogDay    @relation(fields: [logDayId], references: [id], onDelete: Cascade)
+  exercise   Exercise?        @relation(fields: [exerciseId], references: [id])
+  sets       LoggedSet[]
 }
 
 model LoggedSet {
@@ -121,7 +124,7 @@ model LoggedSet {
   reps            Int
   order           Int
 
-  exerciseLog      ProgramLogDayExercise @relation(fields: [logDayExerciseId], references: [id])
+  exerciseLog      ProgramLogDayExercise @relation(fields: [logDayExerciseId], references: [id], onDelete: Cascade)
 }
 
 model RefreshToken {

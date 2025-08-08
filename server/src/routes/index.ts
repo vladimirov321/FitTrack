@@ -2,6 +2,7 @@ import express from 'express';
 import authRoutes from './auth.routes';
 import exerciseRoutes from './exercise.routes';
 import programRoutes from './program.routes';
+import logRoutes from './log.routes';
 
 const router = express.Router();
 
@@ -9,5 +10,6 @@ const router = express.Router();
 router.use('/auth', authRoutes);
 router.use('/exercises', exerciseRoutes);
 router.use('/programs', programRoutes);
+router.use('/logs', logRoutes);
 
 export default router;
