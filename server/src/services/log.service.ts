@@ -1,22 +1,7 @@
 import prisma from '../prisma/client';
+import { LoggedSetData, LoggedExerciseData, WorkoutDayData } from '../types';
 
-export interface LoggedSetData {
-  weight: number;
-  reps: number;
-  order: number;
-}
-
-export interface LoggedExerciseData {
-  exerciseId: string;
-  sets: LoggedSetData[];
-}
-
-export interface WorkoutDayData {
-  date: string; // ISO date string
-  exercises: LoggedExerciseData[];
-}
-
-class LogService {
+export const logService = {
   // Start a new program log
   async startProgramLog(userId: string, programId: string) {
     // Verify program ownership
@@ -55,7 +40,7 @@ class LogService {
     });
 
     return programLog;
-  }
+  },
 
   // Log a completed workout day
   async logWorkoutDay(userId: string, logId: string, dayId: string, workoutData: WorkoutDayData) {
@@ -169,7 +154,7 @@ class LogService {
       console.error('Error creating workout day log:', error);
       throw new Error('Failed to create workout day log. Please check your data and try again.');
     }
-  }
+  },
 
   // Get all user's program logs
   async getUserLogs(userId: string) {
@@ -208,9 +193,9 @@ class LogService {
     });
 
     return logs;
-  }
+  },
 
-  // Get a specific log by ID (helper method)
+  // Get a specific log by ID
   async getLogById(userId: string, logId: string) {
     const log = await prisma.programLog.findFirst({
       where: {
@@ -251,9 +236,9 @@ class LogService {
     });
 
     return log;
-  }
+  },
 
-  // End a program log (optional - for when user stops following a program)
+  // End a program log
   async endProgramLog(userId: string, logId: string) {
     const log = await prisma.programLog.findFirst({
       where: {
@@ -276,7 +261,7 @@ class LogService {
     });
 
     return updatedLog;
-  }
+  },
 
   // Get logs for a specific program
   async getProgramLogs(userId: string, programId: string) {
@@ -310,6 +295,4 @@ class LogService {
 
     return logs;
   }
-}
-
-export const logService = new LogService();
+};

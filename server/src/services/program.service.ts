@@ -1,16 +1,8 @@
 import prisma from '../prisma/client';
 import { ProgramStatus } from '@prisma/client';
+import { CreateProgramData } from '../types';
 
-interface CreateProgramData {
-  name: string;
-  details?: string;
-  days: {
-    name: string;
-    exercises: string[];
-  }[];
-}
-
-class ProgramService {
+export const programService = {
   async createProgramWithDaysAndExercises(userId: string, data: CreateProgramData) {
     const { name, details, days } = data;
 
@@ -68,7 +60,7 @@ class ProgramService {
     });
 
     return program;
-  }
+  },
 
   async getUserPrograms(userId: string) {
     const programs = await prisma.program.findMany({
@@ -97,7 +89,7 @@ class ProgramService {
     });
 
     return programs;
-  }
+  },
 
   async getProgramById(userId: string, programId: string) {
     const program = await prisma.program.findFirst({
@@ -128,7 +120,7 @@ class ProgramService {
     }
 
     return program;
-  }
+  },
 
   async updateProgramStatus(userId: string, programId: string, status: ProgramStatus) {
     const program = await prisma.program.findFirst({
@@ -151,6 +143,4 @@ class ProgramService {
       }
     });
   }
-}
-
-export const programService = new ProgramService();
+};

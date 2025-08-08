@@ -1,18 +1,5 @@
 import prisma from '../prisma/client';
-
-export interface CreateExerciseData {
-  name: string;
-}
-
-export interface UpdateExerciseNameData {
-  name: string;
-}
-
-export interface SetData {
-  weight: number;
-  reps: number;
-  order: number;
-}
+import { CreateExerciseData, UpdateExerciseNameData, SetData } from '../types';
 
 export const exerciseService = {
   async createExercise(userId: string, data: CreateExerciseData) {
